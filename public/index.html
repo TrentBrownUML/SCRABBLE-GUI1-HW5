@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scrabble One Liner Demo Ver</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="../Src/Styles/index.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+    <script src="js/logger.js"></script>
+    <script>
+        $(function () {
+            var $el = $("#draggable");
+            $("#draggable").draggable();
+
+            $el.draggable({
+                containment: "window",
+                handle: ".handle",
+                start: function () {
+                    this._dragStartTime = startAction('dragging tile')
+                }
+            })
+        });
+    </script>
+</head>
+
+<body>
+
+    <div id="draggable" class="ui-widget-content">
+        <img src="../Assets/Images/Tiles/Scrabble_Tile_A.jpg" alt="A">
+    </div>
+
+
+
+
+</body>
+
+</html>
