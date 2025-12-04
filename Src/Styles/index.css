@@ -1,19 +1,90 @@
+:root {
+    /* Board and tile tuning variables - adjust the percentages to scale
+       how large tile is relative to board. */
+    --board-max-w: 90vw;
+    --board-max-h: 80vh;
+    --board-max-px: 1200px;
+    /* cap the board on very wide screens */
+    --tile-percent: 5.5%;
+    /* tile width as percent of board width */
+    --tile-gap: 0.3%;
+    /* gap between tiles expressed as percent of board width */
+    --holder-extra-scale: 1.25;
+    /* extra multiplier so holder comfortably fits tiles on large screens */
+}
+
+/* Board container: responsive width (clamped) and centered */
+#board {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    z-index: 500;
+    /* below tiles (tile z-index is 1000) */
+    width: clamp(320px, var(--board-max-w), var(--board-max-px));
+    height: auto;
+}
+
+/* Make the board image fill the board container while keeping aspect ratio */
+#board img.board {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Tile: width is set in pixels by JS (keeps precise scaling relative to board) */
 #tile {
-    width: 87.5px;
-    height: 90px;
+    width: var(--tile-size-px, 70px);
+    height: auto;
     position: absolute;
-    top: 10px;
-    left: 10px;
+    /* positioned relative to #board */
+    top: 6%;
+    left: 6%;
     cursor: move;
     z-index: 1000;
     -webkit-user-drag: none;
     user-select: none;
-    object-fit: cover;
 }
 
 #tile img,
 .piece {
     width: 100%;
-    height: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+}
+
+/* Tile holder: fixed at bottom center of viewport. JS will compute
+   --holder-width-px so the holder fits 7 tiles (pixels). Provide a
+   fallback width for when JS hasn't run. */
+#tile_Holder {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    z-index: 600;
+    pointer-events: auto;
+    width: var(--holder-width-px, clamp(200px, 40vw, 600px));
+    max-width: 98%;
+}
+
+/* Size the holder image(s) to fill the holder container */
+#tile_Holder img,
+.piece_Holder {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Responsive sizing for the board image: image fills the board container */
+#board img.board {
+    width: 100%;
+    height: auto;
+    max-height: var(--board-max-h);
     display: block;
 }

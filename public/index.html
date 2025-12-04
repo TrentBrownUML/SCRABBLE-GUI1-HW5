@@ -9,14 +9,27 @@
     <link rel="stylesheet" href="../Src/Styles/index.css">
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
-    <script src="js/logger.js"></script>
-    <script src="js/main.js"></script>
+    <script src="../Src/Scripts/logger.js"></script>
+    <script src="../Src/Scripts/main.js"></script>
 </head>
 
 <body>
+    <div class="controls"
+        style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:400;display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.85);padding:6px 10px;border-radius:6px;">
+        <label for="addCount">Tiles:</label>
+        <input id="addCount" type="number" min="1" max="200" value="7" style="width:70px;padding:4px;">
+        <button id="addTilesBtn">Add Tiles</button>
+        <button id="clearTilesBtn">Clear Tiles</button>
+    </div>
 
-    <div id="tile" class="ui-widget-content">
-        <img src="../Assets/Images/Tiles/Scrabble_Tile_A.jpg" class="piece" alt="A">
+    <div id="board">
+        <!-- dynamically generated tiles will be appended here -->
+        <img src="../Assets/Images/Boards/Scrabble_Board_OneLine.png" draggable="false" class="board" alt="the board">
+    </div>
+
+    <div id="tile_Holder" aria-label="tile holder">
+        <img src="../Assets/Images/Board_Components/Scrabble_Tile_Holder.png" draggable="false" class="piece_Holder"
+            alt="piece holder">
     </div>
 </body>
 
