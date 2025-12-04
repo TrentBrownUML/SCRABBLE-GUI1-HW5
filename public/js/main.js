@@ -4,7 +4,7 @@
     // Initialize draggable tile and wire logger hooks.
     $(function () {
 
-        var $element = $('#draggable');
+        var $element = $('#tile');
         if (!$element.length) return;
 
         var opts = {
