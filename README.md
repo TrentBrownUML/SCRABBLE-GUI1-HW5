@@ -1,5 +1,5 @@
 # 🎲 Scrabble GUI
-
+little word game
 A fully-featured browser-based Scrabble game with AI opponents of varying difficulty levels.
 
 ## 👤 Author Information
