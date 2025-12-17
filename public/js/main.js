@@ -1243,7 +1243,7 @@
             } else {
                 // Add tiles remaining in the empty slot
                 const tilesRemaining = tileBag.length;
-                const $remainingLabel = $('<td>').text('🎲 Bag:').addClass('tiles-remaining-label');
+                const $remainingLabel = $('<td>').text('Tile Bag:').addClass('tiles-remaining-label');
                 const $remainingCount = $('<td>').text(tilesRemaining).addClass('tiles-remaining-count');
                 $row.append($remainingLabel).append($remainingCount);
             }

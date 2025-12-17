@@ -69,9 +69,11 @@
             justify-content: center;
             align-items: flex-start;
             margin-bottom: 20px;
-            overflow-x: auto;
+            overflow-x: hidden;
+            overflow-y: visible;
             padding: 10px;
             gap: 15px;
+            max-width: 100%;
         }
 
         /* Data div - left panel */
@@ -79,9 +81,10 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            min-width: 150px;
-            max-width: 180px;
+            min-width: 170px;
+            width: auto;
             flex-shrink: 0;
+            flex-grow: 0;
         }
 
         /* Turn Indicator */
@@ -445,6 +448,9 @@
 
         #rack-container {
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         #rack-container h3 {
@@ -453,14 +459,16 @@
         }
 
         #tile-rack {
-            display: flex;
+            display: inline-flex;
             justify-content: center;
             gap: 8px;
             background: url('../../Assets/Images/Board_Components/Scrabble_Tile_Holder.png') center center no-repeat;
             /* background-color: #8B4513; */
             background-size: 100% 100%;
-            min-height: 80px;
-            padding: 15px 30px;
+            min-height: 70px;
+            width: 100%;
+            max-width: 450px;
+            padding: 12px 25px;
             border-radius: 8px;
             flex-wrap: nowrap;
         }
@@ -635,6 +643,39 @@
 
         #reset-game:hover {
             background: #e74c3c;
+        }
+
+        /* Menacing Bot Button */
+        .btn-menacing {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn-menacing::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-menacing:hover {
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
+            border-color: #c0392b;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.5), inset 0 0 20px rgba(231, 76, 60, 0.1);
+            transform: scale(1.05);
+        }
+
+        .btn-menacing:hover::before {
+            left: 100%;
         }
 
         /* ========================================

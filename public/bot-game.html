@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Scrabble - Bot Challenge</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="../Src/Styles/index.css">
+    <link rel="stylesheet" href="../Src/Styles/bot-setup.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+</head>
+
+<body>
+    <div id="bot-setup-container">
+        <header>
+            <h1>🤖 Local Bot Scrabble Challenge</h1>
+            <p class="subtitle">Choose your opponents wisely...</p>
+        </header>
+
+        <div id="setup-panel">
+            <div id="player-section">
+                <div class="player-card you">
+                    <div class="player-icon">👤</div>
+                    <div class="player-name">You</div>
+                    <div class="player-status">Always goes first!</div>
+                </div>
+            </div>
+
+            <div id="bot-selection">
+                <h2>Add Bots (up to 3)</h2>
+                <p class="bot-instruction">Click the + button to add a bot to your game</p>
+
+                <div id="bot-roster">
+                    <!-- Bot slots will show added bots -->
+                </div>
+
+                <div id="difficulty-buttons">
+                    <!-- Easy Bot -->
+                    <div class="difficulty-card" data-difficulty="easy">
+                        <div class="difficulty-header">
+                            <span class="difficulty-icon">🟢</span>
+                            <span class="difficulty-name">Easy Bot</span>
+                            <button class="add-bot-btn" data-difficulty="easy">+</button>
+                        </div>
+                        <details class="difficulty-details">
+                            <summary>How does this bot play?</summary>
+                            <div class="details-content">
+                                <p><strong>Strategy:</strong> Random Valid Word</p>
+                                <p>This bot finds valid positions on the board and tries random tile combinations until
+                                    it finds a valid word. It accepts the <em>first</em> valid word found, regardless of
+                                    score.</p>
+                                <p><strong>Personality:</strong> Quick but weak. Great for beginners!</p>
+                                <div class="time-stats">
+                                    <p><strong>⏱️ Time Limit:</strong> 10 seconds max</p>
+                                    <p><strong>📊 Typical Turn:</strong> 1-3 seconds</p>
+                                    <p><strong>🎯 Skill Level:</strong> Beginner</p>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Medium Bot -->
+                    <div class="difficulty-card" data-difficulty="medium">
+                        <div class="difficulty-header">
+                            <span class="difficulty-icon">🟡</span>
+                            <span class="difficulty-name">Medium Bot</span>
+                            <button class="add-bot-btn" data-difficulty="medium">+</button>
+                        </div>
+                        <details class="difficulty-details">
+                            <summary>How does this bot play?</summary>
+                            <div class="details-content">
+                                <p><strong>Strategy:</strong> Greedy Best Score</p>
+                                <p>This bot generates ALL possible valid words from its rack and tries each at every
+                                    valid board position. It picks the <em>highest-scoring single play</em>.</p>
+                                <p><strong>Personality:</strong> Methodical scorer. Ignores strategy, just wants points!
+                                </p>
+                                <div class="time-stats">
+                                    <p><strong>⏱️ Time Limit:</strong> 15 seconds max</p>
+                                    <p><strong>📊 Typical Turn:</strong> 3-8 seconds</p>
+                                    <p><strong>🎯 Skill Level:</strong> Intermediate</p>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Hard Bot -->
+                    <div class="difficulty-card" data-difficulty="hard">
+                        <div class="difficulty-header">
+                            <span class="difficulty-icon">🟠</span>
+                            <span class="difficulty-name">Hard Bot</span>
+                            <button class="add-bot-btn" data-difficulty="hard">+</button>
+                        </div>
+                        <details class="difficulty-details">
+                            <summary>How does this bot play?</summary>
+                            <div class="details-content">
+                                <p><strong>Strategy:</strong> Weighted Scoring + Tactics</p>
+                                <p>Like Medium, but considers:</p>
+                                <ul>
+                                    <li>Rack leave quality (keeps good letters like S, blanks)</li>
+                                    <li>Defensive positioning (avoids opening triple words)</li>
+                                    <li>Vowel/consonant balance</li>
+                                </ul>
+                                <p><strong>Personality:</strong> Strategic thinker. Plays to win!</p>
+                                <div class="time-stats">
+                                    <p><strong>⏱️ Time Limit:</strong> 20 seconds max</p>
+                                    <p><strong>📊 Typical Turn:</strong> 5-12 seconds</p>
+                                    <p><strong>🎯 Skill Level:</strong> Advanced</p>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- Expert Bot -->
+                    <div class="difficulty-card" data-difficulty="expert">
+                        <div class="difficulty-header">
+                            <span class="difficulty-icon">🔴</span>
+                            <span class="difficulty-name">Expert Bot</span>
+                            <button class="add-bot-btn" data-difficulty="expert">+</button>
+                        </div>
+                        <details class="difficulty-details">
+                            <summary>How does this bot play?</summary>
+                            <div class="details-content">
+                                <p><strong>Strategy:</strong> GADDAG + Lookahead</p>
+                                <p>Uses an optimized GADDAG data structure for word generation and considers opponent
+                                    responses with multi-ply lookahead.</p>
+                                <p><strong>Personality:</strong> Tournament-level play. Prepare to lose!</p>
+                                <div class="time-stats warning">
+                                    <p><strong>⚠️ Time Limit:</strong> 25 seconds max</p>
+                                    <p><strong>📊 Typical Turn:</strong> 10-20 seconds</p>
+                                    <p><strong>🎯 Skill Level:</strong> Championship</p>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wait-time-display">
+                <h3>⏳ Estimated Wait Times</h3>
+                <p class="wait-explanation">After your turn, you'll wait for all bots to play:</p>
+                <div id="wait-stats">
+                    <div class="wait-stat">
+                        <span class="stat-label">Minimum:</span>
+                        <span id="wait-min">--</span>
+                    </div>
+                    <div class="wait-stat">
+                        <span class="stat-label">Average:</span>
+                        <span id="wait-avg">--</span>
+                    </div>
+                    <div class="wait-stat">
+                        <span class="stat-label">Maximum:</span>
+                        <span id="wait-max">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="game-controls">
+                <button id="start-bot-game" class="btn btn-start" disabled>
+                    Add at least one bot to start!
+                </button>
+                <a href="index.html" class="btn btn-back">← Back to Single Player</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bot-setup.js"></script>
+</body>
+
+</html>
