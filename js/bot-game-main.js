@@ -306,7 +306,7 @@
         try {
             showMessage('Loading dictionary...', 'info');
 
-            const response = await fetch('../dictionary.txt');
+            const response = await fetch('./dictionary.txt');
             if (!response.ok) throw new Error('Failed to load dictionary');
             const text = await response.text();
             const words = text.split('\n').map(w => w.trim().toUpperCase()).filter(w => w.length > 0);
@@ -531,7 +531,7 @@
     function createTileElement(letter, index) {
         if (!letter) letter = '?';
         const displayLetter = letter === '_' ? 'Blank' : letter;
-        const imagePath = `../Assets/Images/Tiles/Scrabble_Tile_${displayLetter}.jpg`;
+        const imagePath = `./Assets/Images/Tiles/Scrabble_Tile_${displayLetter}.jpg`;
 
         const $tile = $('<div>')
             .addClass('tile')
@@ -1161,8 +1161,8 @@
         const displayLetter = letter;
         // For blanks, use the Blank tile image; otherwise use the letter's image
         const imagePath = isBlank
-            ? `../Assets/Images/Tiles/Scrabble_Tile_Blank.jpg`
-            : `../Assets/Images/Tiles/Scrabble_Tile_${displayLetter}.jpg`;
+            ? `./Assets/Images/Tiles/Scrabble_Tile_Blank.jpg`
+            : `./Assets/Images/Tiles/Scrabble_Tile_${displayLetter}.jpg`;
         const botColor = bot.color || PLAYER_COLORS.bot1;
 
         // Get source position (bot's row in scoreboard)

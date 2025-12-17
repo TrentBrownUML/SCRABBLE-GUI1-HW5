@@ -161,7 +161,7 @@
     async function loadDictionary() {
         try {
             showMessage('Loading dictionary...', 'info');
-            const response = await fetch('../dictionary.txt');
+            const response = await fetch('./dictionary.txt');
             if (!response.ok) {
                 throw new Error('Failed to load dictionary');
             }
@@ -425,7 +425,7 @@
         }
 
         const displayLetter = letter === '_' ? 'Blank' : letter;
-        const imagePath = `../Assets/Images/Tiles/Scrabble_Tile_${displayLetter}.jpg`;
+        const imagePath = `./Assets/Images/Tiles/Scrabble_Tile_${displayLetter}.jpg`;
 
         const $tile = $('<div>')
             .addClass('tile')
