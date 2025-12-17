@@ -1,3 +1,50 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Medium Bot AI
+ * =============================================================================
+ * 
+ * @file        medium-bot.js
+ * @description Medium difficulty AI opponent for Scrabble bot matches.
+ *              Uses an improved strategy that considers more word candidates
+ *              and shows preference for longer words and bonus squares.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * AI STRATEGY:
+ * =============================================================================
+ * 
+ * SEARCH APPROACH:
+ * - Finds up to 8 valid word candidates (more than Easy)
+ * - Evaluates words with bonus multipliers in scoring
+ * - Prefers longer words when scores are similar
+ * 
+ * MOVE GENERATION:
+ * - Broader anchor point analysis than Easy bot
+ * - Considers horizontal and vertical placements
+ * - Basic bonus square awareness in selection
+ * - Uses larger portion of vocabulary
+ * 
+ * IMPROVEMENTS OVER EASY:
+ * - More candidates = better chance of finding good moves
+ * - Length preference leads to more strategic plays
+ * - Better utilization of rack tiles
+ * 
+ * TIME LIMIT: 15 seconds maximum search time
+ * 
+ * =============================================================================
+ * EXTERNAL DEPENDENCIES:
+ * =============================================================================
+ * - Requires global dictionary Set from bot-game-main.js
+ * - Exposed as window.MediumBot for bot-game-main.js integration
+ * 
+ * =============================================================================
+ */
+
 (function (window) {
     'use strict';
 

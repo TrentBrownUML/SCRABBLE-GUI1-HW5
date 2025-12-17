@@ -1,3 +1,74 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Bot Match Mode
+ * =============================================================================
+ * 
+ * @file        bot-game-main.js
+ * @description Core game logic for playing Scrabble against AI bot opponents.
+ *              Extends single-player functionality with multi-player turn
+ *              management, bot AI integration, and competitive scoring.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * IMPLEMENTED FEATURES:
+ * =============================================================================
+ * 
+ * BOT AI SYSTEM:
+ * - Four difficulty levels: Easy, Medium, Hard, Expert
+ * - Each bot uses different search strategies and time limits
+ * - Bots generate valid words from dictionary using board analysis
+ * - Configurable number of opponents (1-3 bots)
+ * 
+ * MULTI-PLAYER MANAGEMENT:
+ * - Turn-based gameplay with clear turn indicators
+ * - Score tracking for all players (human + bots)
+ * - Player-specific color coding for visual distinction
+ * - Automatic turn progression after moves/passes
+ * 
+ * BOT FEATURES:
+ * - Animated "thinking" indicators during bot turns
+ * - Random personality-based names for each difficulty
+ * - Tile placement animations showing bot moves
+ * - Pass/exchange behavior when no valid moves found
+ * 
+ * GAME FLOW:
+ * - Human player always goes first
+ * - Bots take turns automatically after human submits
+ * - Game ends when tile bag is empty and any player empties rack
+ * - Or when all players pass consecutively
+ * - Final scoring with remaining tile penalties
+ * 
+ * USER INTERFACE:
+ * - Dynamic score table showing all players
+ * - Turn indicator with bot thinking animation
+ * - Word history showing all players' moves
+ * - Surrender button for early game exit
+ * - Controls disabled during bot turns
+ * 
+ * =============================================================================
+ * EXTERNAL DEPENDENCIES:
+ * =============================================================================
+ * - jQuery 3.7.1 (https://jquery.com/)
+ * - jQuery UI 1.14.1 (https://jqueryui.com/)
+ * - easy-bot.js, medium-bot.js, hard-bot.js, expert-bot.js - AI modules
+ * - dictionary.txt - Word list for validation
+ * 
+ * =============================================================================
+ * BOT DIFFICULTY LEVELS:
+ * =============================================================================
+ * EASY:   Finds up to 3 valid words, picks best. Simple strategy.
+ * MEDIUM: Finds up to 8 words, prefers longer words and bonus squares.
+ * HARD:   Exhaustive dictionary search, considers parallel words.
+ * EXPERT: Full optimization with prefix trees, bingo hunting, strategic play.
+ * 
+ * =============================================================================
+ */
+
 (function () {
     'use strict';
 
@@ -74,6 +145,43 @@
     let currentPlayerIndex = 0; // Whose turn it is
     let currentTurnTiles = [];  // Tiles placed this turn
     let gameConfig = null;      // Bot configuration from setup page
+
+    // ========================================
+    // STATE VALIDATION & SYNC
+    // ========================================
+
+    /**
+     * Validates and fixes tile state synchronization for human player
+     * Ensures rack + currentTurnTiles = 7 (or less if bag is empty)
+     */
+    function validateTileState() {
+        if (!players[0]) return;
+
+        const rackCount = players[0].rack.length;
+        const boardCount = currentTurnTiles.length;
+        const totalInPlay = rackCount + boardCount;
+
+        // Log state for debugging
+        console.log(`[TileState] Rack: ${rackCount}, Board: ${boardCount}, Total: ${totalInPlay}`);
+
+        // Check for rack overflow
+        if (rackCount > 7) {
+            console.warn(`[TileState] Rack overflow: ${rackCount} tiles. Trimming to 7.`);
+            players[0].rack = players[0].rack.slice(0, 7);
+        }
+
+        // Check for too many tiles in play
+        if (totalInPlay > 7) {
+            console.warn(`[TileState] Total overflow: ${totalInPlay} tiles in play.`);
+        }
+
+        // Verify boardState matches currentTurnTiles
+        currentTurnTiles.forEach(tile => {
+            if (boardState[tile.row][tile.col] === null) {
+                console.warn(`[TileState] Board state null at [${tile.row},${tile.col}] but tile tracked`);
+            }
+        });
+    }
 
     // ========================================
     // PERFORMANCE DETECTION & ADAPTATION
@@ -364,8 +472,9 @@
                     $cell.append($('<span>').addClass('bonus-label').text(labelText));
                 }
 
+                // Only accept rack tiles (not already placed tiles)
                 $cell.droppable({
-                    accept: '.tile',
+                    accept: '.tile:not(.placed)',
                     hoverClass: 'cell-hover',
                     drop: function (event, ui) {
                         handleTileDrop(event, ui, $(this));
@@ -403,9 +512,6 @@
 
         // Make rack tiles swappable
         setupRackSwapping();
-
-        // Make rack droppable to receive tiles from board
-        setupRackAsDropzone();
     }
 
     function setupRackSwapping() {
@@ -416,7 +522,7 @@
             const $targetTile = $(this);
 
             $targetTile.droppable({
-                accept: '#tile-rack .tile',
+                accept: '#tile-rack .tile:not(.placed)',
                 tolerance: 'pointer',
                 over: function (event, ui) {
                     if (ui.draggable[0] !== this) {
@@ -444,80 +550,6 @@
                 }
             });
         });
-    }
-
-    function setupRackAsDropzone() {
-        const $rack = $('#tile-rack');
-
-        // Make the rack itself droppable for tiles from the board
-        if ($rack.hasClass('ui-droppable')) {
-            $rack.droppable('destroy');
-        }
-
-        $rack.droppable({
-            accept: '.tile.placed.current-turn-tile',
-            tolerance: 'pointer',
-            over: function () {
-                $(this).addClass('rack-hover');
-            },
-            out: function () {
-                $(this).removeClass('rack-hover');
-            },
-            drop: function (event, ui) {
-                $(this).removeClass('rack-hover');
-                const $tile = ui.draggable;
-                returnTileToRack($tile);
-            }
-        });
-    }
-
-    function returnTileToRack($tile) {
-        const row = parseInt($tile.data('board-row'));
-        const col = parseInt($tile.data('board-col'));
-        const letter = $tile.data('original-letter') || $tile.data('letter');
-
-        // Guard: Validate data
-        if (isNaN(row) || isNaN(col)) {
-            console.warn('Invalid tile data for return to rack');
-            return;
-        }
-
-        // Guard: Check if tile is actually on board
-        if (boardState[row][col] === null) {
-            console.warn('Tile position already empty');
-            return;
-        }
-
-        // Guard: Prevent rack overflow (max 7 tiles)
-        if (players[0].rack.length >= 7) {
-            console.warn('Rack full, cannot return tile');
-            showMessage('Rack is full!', 'error');
-            return;
-        }
-
-        // Remove from board state
-        boardState[row][col] = null;
-
-        // Remove from currentTurnTiles
-        const idx = currentTurnTiles.findIndex(t => t.row === row && t.col === col);
-        if (idx !== -1) {
-            currentTurnTiles.splice(idx, 1);
-        }
-
-        // Clear the cell
-        const $cell = $(`.board-cell[data-row="${row}"][data-col="${col}"]`);
-        $cell.find('.tile').remove();
-        $cell.removeClass('has-tile');
-
-        // Return letter to rack (with guard)
-        if (players[0].rack.length < 7) {
-            players[0].rack.push(letter);
-        }
-
-        // Re-render
-        renderRack();
-        calculateAndDisplayScore();
-        showMessage('Tile returned to rack.', 'info');
     }
 
     function renderRackWithAnimation() {
@@ -562,6 +594,28 @@
     // TILE PLACEMENT
     // ========================================
 
+    /**
+     * Snaps a tile back to its position in the rack
+     * Used when a drop is rejected (cell occupied, etc.)
+     */
+    function snapTileBackToRack($tile) {
+        // Reset any dragging styles
+        $tile.removeClass('dragging swap-target');
+        $('body').removeClass('dragging-active');
+
+        // Reset inline styles that jQuery UI draggable adds
+        $tile.css({
+            'position': '',
+            'left': '',
+            'top': '',
+            'z-index': ''
+        });
+
+        // Always re-render the rack to ensure tile is properly restored
+        // This is more reliable than trying to animate back
+        renderRack();
+    }
+
     function handleTileDrop(event, ui, $cell) {
         if (currentPlayerIndex !== 0) return; // Not human's turn
 
@@ -571,56 +625,38 @@
         const row = parseInt($cell.data('row'));
         const col = parseInt($cell.data('col'));
 
-        // Check if this tile is coming from the board (a move, not new placement)
-        const isFromBoard = $tile.hasClass('current-turn-tile');
-        const oldRow = parseInt($tile.data('board-row'));
-        const oldCol = parseInt($tile.data('board-col'));
-
-        if (boardState[row][col] !== null) {
-            showMessage('Cell already has a tile!', 'error');
+        // Reject tiles that are already placed on the board
+        if ($tile.hasClass('placed')) {
+            showMessage('Use "Return Tiles" button to move placed tiles!', 'error');
+            snapTileBackToRack($tile);
             return;
         }
 
-        if (isFromBoard) {
-            // Moving a tile from one board position to another
-            moveTileOnBoard($tile, oldRow, oldCol, row, col, originalLetter, letter);
-        } else if (originalLetter === '_') {
+        // Check if cell already has a tile
+        if (boardState[row][col] !== null) {
+            // Verify the existing tile is still in the DOM
+            const $existingTile = $cell.find('.tile');
+            if ($existingTile.length === 0) {
+                // Board state says occupied but no tile in DOM - fix the desync
+                console.warn(`[handleTileDrop] Desync: boardState[${row}][${col}] occupied but no DOM tile. Clearing state.`);
+                boardState[row][col] = null;
+                $cell.removeClass('has-tile');
+                // Now allow placement to proceed
+            } else {
+                // Cell is genuinely occupied - snap tile back to rack
+                showMessage('Cell already has a tile!', 'error');
+                snapTileBackToRack($tile);
+                return;
+            }
+        }
+
+        if (originalLetter === '_') {
             const chosenLetter = promptForBlankLetter();
             if (!chosenLetter) return;
             placeBlankTile($tile, $cell, row, col, chosenLetter);
         } else {
             placeTile($tile, $cell, row, col, letter);
         }
-    }
-
-    function moveTileOnBoard($tile, oldRow, oldCol, newRow, newCol, originalLetter, displayLetter) {
-        // Clear old position
-        boardState[oldRow][oldCol] = null;
-        const $oldCell = $(`.board-cell[data-row="${oldRow}"][data-col="${oldCol}"]`);
-        $oldCell.removeClass('has-tile');
-
-        // Update currentTurnTiles
-        const idx = currentTurnTiles.findIndex(t => t.row === oldRow && t.col === oldCol);
-        if (idx !== -1) {
-            currentTurnTiles[idx].row = newRow;
-            currentTurnTiles[idx].col = newCol;
-        }
-
-        // Set new position in board state
-        if (originalLetter === '_') {
-            boardState[newRow][newCol] = { isBlank: true, letter: displayLetter };
-        } else {
-            boardState[newRow][newCol] = displayLetter;
-        }
-
-        // Position tile in new cell
-        const $newCell = $(`.board-cell[data-row="${newRow}"][data-col="${newCol}"]`);
-        $tile.detach().css({ position: 'absolute', top: 0, left: 0 });
-        $tile.attr('data-board-row', newRow).attr('data-board-col', newCol);
-        $newCell.append($tile).addClass('has-tile');
-
-        calculateAndDisplayScore();
-        showMessage('Tile moved!', 'success');
     }
 
     function promptForBlankLetter() {
@@ -655,13 +691,15 @@
         currentTurnTiles.push({ row, col, letter, representedLetter: letter });
 
         $tile.detach().css({ position: 'absolute', top: 0, left: 0 });
-        $tile.addClass('placed current-turn-tile');
+        $tile.addClass('placed');
         $tile.attr('data-board-row', row).attr('data-board-col', col);
         $tile.removeAttr('data-rack-index');
-        // Keep draggable enabled so tiles can be moved during current turn
+        // Disable dragging for placed tiles
+        $tile.draggable('disable');
         $cell.append($tile).addClass('has-tile');
 
         renderRack();
+        validateTileState();
         calculateAndDisplayScore();
     }
 
@@ -682,16 +720,18 @@
         currentTurnTiles.push({ row, col, letter: '_', representedLetter });
 
         $tile.detach().css({ position: 'absolute', top: 0, left: 0 });
-        $tile.addClass('placed current-turn-tile');
+        $tile.addClass('placed');
         $tile.attr('data-board-row', row).attr('data-board-col', col);
         $tile.attr('data-letter', representedLetter);  // Update displayed letter
         $tile.removeAttr('data-rack-index');
         // Keep original-letter as '_' for returning to rack
         $tile.append($('<span>').addClass('blank-letter-overlay').text(representedLetter));
-        // Keep draggable enabled so tiles can be moved during current turn
+        // Disable dragging for placed tiles
+        $tile.draggable('disable');
         $cell.append($tile).addClass('has-tile');
 
         renderRack();
+        validateTileState();
         calculateAndDisplayScore();
     }
 

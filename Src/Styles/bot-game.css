@@ -1,3 +1,72 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Bot Match Stylesheet
+ * =============================================================================
+ * 
+ * @file        bot-game.css
+ * @description Supplementary styles for bot match mode. Extends index.css
+ *              with multi-player specific UI elements, bot turn indicators,
+ *              and player color theming.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * STYLESHEET SECTIONS:
+ * =============================================================================
+ * 
+ * 1. CSS CUSTOM PROPERTIES
+ *    - Player color variables (human, bot1, bot2, bot3)
+ *    - Animation timing and spacing variables
+ * 
+ * 2. MULTI-PLAYER SCORE TABLE
+ *    - Dynamic player list with color-coded rows
+ *    - Current turn highlighting
+ * 
+ * 3. TURN INDICATORS
+ *    - Current player display with color theming
+ *    - Bot "thinking" animation with dots
+ * 
+ * 4. TILE RACK (Bot Game)
+ *    - Positioned under board for bot match layout
+ * 
+ * 5. TILE SWAPPING
+ *    - Swap target highlighting, animation states
+ * 
+ * 6. THINKING INDICATORS
+ *    - Animated dots during bot turn
+ *    - Inline thinking states for UI elements
+ * 
+ * 7. CONTROL BUTTONS
+ *    - Pass turn and surrender button styling
+ *    - Surrender tooltip with menacing message
+ * 
+ * 8. DISABLED STATES
+ *    - Grayed out controls during bot turns
+ * 
+ * 9. GAME OVER MODAL
+ *    - Overlay with final scores and winner announcement
+ * 
+ * =============================================================================
+ * PLAYER COLOR SCHEME:
+ * =============================================================================
+ * Human (You):  #2ecc71 (Green)
+ * Bot 1:        #e74c3c (Red)
+ * Bot 2:        #9b59b6 (Purple)
+ * Bot 3:        #f39c12 (Orange)
+ * 
+ * =============================================================================
+ * DEPENDENCIES:
+ * =============================================================================
+ * - Requires index.css to be loaded first (base styles)
+ * - Uses CSS custom properties for dynamic theming
+ * 
+ * =============================================================================
+ */
+
 /* ========================================
    BOT GAME SPECIFIC STYLES
    Standardized styling for bot games
@@ -41,14 +110,22 @@
 }
 
 #board-container {
-    overflow-x: hidden !important;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+        "data-div board side-panel"
+        "data-div rack side-panel";
+    justify-content: center;
+    align-items: start;
+    overflow-x: auto;
     overflow-y: visible;
     max-width: 100%;
-    flex-wrap: wrap;
 }
 
 /* Data div - expand to fit all content */
 #data-div {
+    grid-area: data-div;
     min-width: 180px;
     width: auto;
     max-width: none;
@@ -115,15 +192,16 @@ body.dragging-active * {
    TILE RACK (Bot Game - Under Board)
    ======================================== */
 #rack-area {
+    grid-area: rack;
     /* Position under the board, matching board width */
-    width: 638px;
-    /* 15 cells × 40px + 14 gaps × 2px + 10px padding */
+    width: 100%;
+    max-width: 720px;
+    /* 15 cells × 46px + 14 gaps × 2px + padding */
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 15px;
-    order: 10;
-    /* Ensure it appears after the board */
+    justify-self: center;
+    margin-top: 0;
 }
 
 #rack-area h3 {
@@ -135,27 +213,20 @@ body.dragging-active * {
 #rack-area #tile-rack {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     background: url('../../Assets/Images/Board_Components/Scrabble_Tile_Holder.png') center center no-repeat;
     background-size: 100% 100%;
-    min-height: 70px;
+    min-height: 80px;
     width: 100%;
-    max-width: 450px;
-    padding: 12px 25px;
+    max-width: 520px;
+    padding: 14px 30px;
     border-radius: 8px;
     flex-wrap: nowrap;
     transition: all 0.2s ease;
 }
 
-/* Rack as dropzone for returning tiles */
-#tile-rack.rack-hover {
-    background-color: rgba(46, 204, 113, 0.3);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
-    transform: scale(1.02);
-}
-
 /* ========================================
-   TILE SWAPPING & CURRENT TURN TILES
+   TILE SWAPPING
    ======================================== */
 
 /* Swap target highlighting */
@@ -171,36 +242,6 @@ body.dragging-active * {
     opacity: 0.8;
     transform: scale(1.1);
     transition: all 0.1s ease;
-}
-
-/* Current turn tiles - subtle indicator they can be moved */
-.tile.current-turn-tile {
-    cursor: grab;
-}
-
-.tile.current-turn-tile::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border: 2px dashed rgba(46, 204, 113, 0.6);
-    border-radius: 6px;
-    pointer-events: none;
-    animation: currentTilePulse 2s ease-in-out infinite;
-}
-
-@keyframes currentTilePulse {
-
-    0%,
-    100% {
-        opacity: 0.4;
-    }
-
-    50% {
-        opacity: 1;
-    }
 }
 
 /* ========================================
@@ -379,40 +420,50 @@ body.dragging-active * {
 .btn-pass {
     background: #9b59b6;
     color: white;
+    position: relative;
+    z-index: 1;
 }
 
 .btn-pass:hover {
     background: #8e44ad;
+    z-index: 2;
 }
 
 /* Surrender button - menacing style */
 .btn-surrender {
     position: relative;
     overflow: visible;
+    z-index: 0;
 }
 
 .btn-surrender::after {
     content: '😭 The bots will remember this...';
     position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
+    bottom: calc(100% + 8px);
+    right: 0;
+    left: auto;
+    transform: none;
+    background: rgba(0, 0, 0, 0.95);
     color: var(--color-bot-1);
     padding: var(--spacing-sm) 12px;
     border-radius: 6px;
     font-size: 0.75rem;
     white-space: nowrap;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity var(--anim-fast) ease, bottom var(--anim-fast) ease;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
     border: 1px solid var(--color-bot-1);
-    z-index: 100;
+    z-index: 1000;
+}
+
+.btn-surrender:hover {
+    z-index: 10;
 }
 
 .btn-surrender:hover::after {
     opacity: 1;
-    bottom: 110%;
+    visibility: visible;
 }
 
 /* ========================================
@@ -567,4 +618,42 @@ body.dragging-active * {
 
 .bot-color-3 {
     --bot-color: var(--color-bot-3);
+}
+
+/* ========================================
+   SITE FOOTER STYLES
+   ======================================== */
+
+.site-footer {
+    background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
+    border-top: 3px solid #c9a959;
+    padding: 20px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer-content p {
+    margin: 5px 0;
+    color: #e8dcc8;
+    font-size: 0.9rem;
+}
+
+.footer-content strong {
+    color: #c9a959;
+}
+
+.footer-content a {
+    color: #c9a959;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+    color: #fff;
+    text-decoration: underline;
 }

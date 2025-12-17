@@ -1,3 +1,52 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Hard Bot AI
+ * =============================================================================
+ * 
+ * @file        hard-bot.js
+ * @description Hard difficulty AI opponent for Scrabble bot matches.
+ *              Uses exhaustive dictionary search with advanced scoring
+ *              that considers bonus square positioning and parallel words.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * AI STRATEGY:
+ * =============================================================================
+ * 
+ * SEARCH APPROACH:
+ * - Exhaustive search through dictionary words that can be formed
+ * - Evaluates up to 15 candidates before selecting best
+ * - Full bonus square calculation in scoring
+ * - Considers parallel word formations for extra points
+ * 
+ * MOVE GENERATION:
+ * - Searches actual dictionary entries (not just rack permutations)
+ * - Tests each dictionary word against possible board positions
+ * - Validates all perpendicular words formed
+ * - Prioritizes high-scoring bonus square combinations
+ * 
+ * ADVANCED FEATURES:
+ * - Parallel word awareness (forming multiple words in one play)
+ * - Strategic bonus square targeting
+ * - Better blank tile utilization
+ * - Longer search time for deeper analysis
+ * 
+ * TIME LIMIT: 20 seconds maximum search time
+ * 
+ * =============================================================================
+ * EXTERNAL DEPENDENCIES:
+ * =============================================================================
+ * - Requires global dictionary Set from bot-game-main.js
+ * - Exposed as window.HardBot for bot-game-main.js integration
+ * 
+ * =============================================================================
+ */
+
 (function (window) {
     'use strict';
 

@@ -1,3 +1,58 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Expert Bot AI
+ * =============================================================================
+ * 
+ * @file        expert-bot.js
+ * @description Expert difficulty AI opponent for Scrabble bot matches.
+ *              Highly optimized exhaustive search with advanced heuristics,
+ *              prefix tree optimization, and strategic positioning.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * AI STRATEGY:
+ * =============================================================================
+ * 
+ * SEARCH APPROACH:
+ * - Full dictionary search with prefix tree optimization
+ * - Evaluates up to 50 candidates for best selection
+ * - Prioritizes high-value plays (Triple Word, Bingos)
+ * - Considers future board state for strategic positioning
+ * 
+ * ADVANCED TECHNIQUES:
+ * - Prefix tree (trie) for efficient word lookup
+ * - Bingo hunting (using all 7 tiles for 50-point bonus)
+ * - Optimal blank tile assignment
+ * - Strategic board control (blocking opponent opportunities)
+ * 
+ * OPTIMIZATION:
+ * - Early pruning of low-value candidates
+ * - Parallel word score calculation
+ * - Position value heuristics
+ * - Extended time limit for deeper analysis
+ * 
+ * EXPERT BEHAVIORS:
+ * - Actively seeks Triple Word Score combinations
+ * - Maximizes blank tile value
+ * - Avoids opening premium squares for opponent
+ * - Balances immediate score vs. board position
+ * 
+ * TIME LIMIT: 25 seconds maximum search time
+ * 
+ * =============================================================================
+ * EXTERNAL DEPENDENCIES:
+ * =============================================================================
+ * - Requires global dictionary Set from bot-game-main.js
+ * - Exposed as window.ExpertBot for bot-game-main.js integration
+ * 
+ * =============================================================================
+ */
+
 (function (window) {
     'use strict';
 

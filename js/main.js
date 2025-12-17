@@ -1,3 +1,78 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Single Player Mode
+ * =============================================================================
+ * 
+ * @file        main.js
+ * @description Core game logic for single-player Scrabble implementation.
+ *              Handles board rendering, tile management, drag-and-drop placement,
+ *              word validation, scoring, and game state management.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * IMPLEMENTED FEATURES:
+ * =============================================================================
+ * 
+ * CORE GAMEPLAY:
+ * - Full 15x15 Scrabble board with proper bonus square layout (TW, DW, TL, DL)
+ * - Official Scrabble tile distribution (100 tiles including 2 blanks)
+ * - Drag-and-drop tile placement using jQuery UI
+ * - Tile rack with 7 tiles, automatic refill after each turn
+ * - Tile swapping/rearranging within the rack
+ * 
+ * WORD VALIDATION:
+ * - Dictionary validation using external dictionary.txt file
+ * - Validates primary word and all perpendicular words formed
+ * - First word must cross center star (7,7)
+ * - Subsequent words must connect to existing tiles
+ * - Validates straight-line placement (horizontal or vertical)
+ * 
+ * SCORING SYSTEM:
+ * - Letter values based on official Scrabble scoring
+ * - Bonus square multipliers (Double/Triple Letter, Double/Triple Word)
+ * - 50-point bonus for using all 7 tiles (Bingo)
+ * - Real-time score preview before submission
+ * 
+ * USER INTERFACE:
+ * - Visual tile glow effects indicating bonus squares
+ * - Word history panel showing all played words with scores
+ * - Remaining tile distribution table
+ * - Current word preview with score calculation
+ * - Responsive design for different screen sizes
+ * 
+ * GAME CONTROLS:
+ * - Submit Word: Validate and score placed tiles
+ * - Return Tiles: Return all placed tiles to rack
+ * - Pass Turn: Skip turn (tracks consecutive passes)
+ * - Tile Swap Zone: Exchange tiles with the bag
+ * 
+ * =============================================================================
+ * EXTERNAL DEPENDENCIES:
+ * =============================================================================
+ * - jQuery 3.7.1 (https://jquery.com/)
+ * - jQuery UI 1.14.1 (https://jqueryui.com/) - Draggable/Droppable widgets
+ * - dictionary.txt - Word list for validation
+ * 
+ * =============================================================================
+ * CODE STRUCTURE:
+ * =============================================================================
+ * The code is organized into logical sections:
+ * 1. Configuration - Tile values, board layout, game constants
+ * 2. Game State - Variables tracking board, rack, scores, etc.
+ * 3. Initialization - DOM ready, board creation, event binding
+ * 4. Tile Management - Rendering, dragging, placement
+ * 5. Word Validation - Dictionary lookup, connectivity checks
+ * 6. Scoring - Point calculation with multipliers
+ * 7. UI Updates - Display refreshes, animations, messages
+ * 
+ * =============================================================================
+ */
+
 (function () {
     'use strict';
 
@@ -83,6 +158,41 @@
     let dictionaryLoaded = false;   // Track if dictionary has finished loading
     let turnNumber = 0;             // Track turn count for word history
     let wordHistory = [];           // Array of { turn, player, word, score }
+
+    // ========================================
+    // STATE VALIDATION & SYNC
+    // ========================================
+
+    /**
+     * Validates and fixes tile state synchronization
+     * Ensures rack + currentTurnTiles = 7 (or less if bag is empty)
+     */
+    function validateTileState() {
+        const rackCount = playerRack.length;
+        const boardCount = currentTurnTiles.length;
+        const totalInPlay = rackCount + boardCount;
+
+        // Log state for debugging
+        console.log(`[TileState] Rack: ${rackCount}, Board: ${boardCount}, Total: ${totalInPlay}`);
+
+        // Check for rack overflow
+        if (rackCount > 7) {
+            console.warn(`[TileState] Rack overflow: ${rackCount} tiles. Trimming to 7.`);
+            playerRack = playerRack.slice(0, 7);
+        }
+
+        // Check for too many tiles in play
+        if (totalInPlay > 7) {
+            console.warn(`[TileState] Total overflow: ${totalInPlay} tiles in play.`);
+        }
+
+        // Verify boardState matches currentTurnTiles
+        currentTurnTiles.forEach(tile => {
+            if (boardState[tile.row][tile.col] === null) {
+                console.warn(`[TileState] Board state null at [${tile.row},${tile.col}] but tile tracked`);
+            }
+        });
+    }
 
     // ========================================
     // INITIALIZATION
@@ -305,9 +415,9 @@
                     $cell.append($('<span>').addClass('bonus-label').text(labelText));
                 }
 
-                // Make cell droppable
+                // Make cell droppable - only accept rack tiles (not already placed tiles)
                 $cell.droppable({
-                    accept: '.tile',
+                    accept: '.tile:not(.placed)',
                     hoverClass: 'cell-hover',
                     drop: function (event, ui) {
                         handleTileDrop(event, ui, $(this));
@@ -353,6 +463,12 @@
         // Filter out any undefined values that might have crept in
         playerRack = playerRack.filter(letter => letter !== undefined && letter !== null);
 
+        // Safety guard: Ensure rack never exceeds 7 tiles
+        if (playerRack.length > 7) {
+            console.warn(`[renderRack] Rack overflow: ${playerRack.length} tiles. Trimming to 7.`);
+            playerRack = playerRack.slice(0, 7);
+        }
+
         playerRack.forEach((letter, index) => {
             const $tile = createTileElement(letter, index);
             $rack.append($tile);
@@ -370,7 +486,7 @@
             const $targetTile = $(this);
 
             $targetTile.droppable({
-                accept: '#tile-rack .tile',
+                accept: '#tile-rack .tile:not(.placed)',
                 tolerance: 'pointer',
                 over: function (event, ui) {
                     // Don't highlight if dragging over itself
@@ -430,6 +546,7 @@
         const $tile = $('<div>')
             .addClass('tile')
             .attr('data-letter', letter)
+            .attr('data-original-letter', letter)  // Keep track of original letter for blanks
             .attr('data-rack-index', index)
             .append(
                 $('<img>')
@@ -445,10 +562,12 @@
             zIndex: 1000,
             start: function (event, ui) {
                 $(this).addClass('dragging');
+                $('body').addClass('dragging-active');
                 startAction('Tile Drag: ' + letter);
             },
             stop: function (event, ui) {
                 $(this).removeClass('dragging');
+                $('body').removeClass('dragging-active');
                 $('#tile-rack .tile').removeClass('swap-target');
                 endAction('Tile Drag: ' + letter);
             }
@@ -461,21 +580,62 @@
     // DRAG AND DROP HANDLING
     // ========================================
 
+    /**
+     * Snaps a tile back to its position in the rack
+     * Used when a drop is rejected (cell occupied, etc.)
+     */
+    function snapTileBackToRack($tile) {
+        // Reset any dragging styles
+        $tile.removeClass('dragging swap-target');
+        $('body').removeClass('dragging-active');
+
+        // Reset inline styles that jQuery UI draggable adds
+        $tile.css({
+            'position': '',
+            'left': '',
+            'top': '',
+            'z-index': ''
+        });
+
+        // Always re-render the rack to ensure tile is properly restored
+        // This is more reliable than trying to animate back
+        renderRack();
+    }
+
     function handleTileDrop(event, ui, $cell) {
         const $tile = ui.draggable;
         const letter = $tile.data('letter');
+        const originalLetter = $tile.data('original-letter') || letter;
         const row = parseInt($cell.data('row'));
         const col = parseInt($cell.data('col'));
 
-        // Check if cell already has a tile
-        if (boardState[row][col] !== null) {
-            showMessage('That cell already has a tile!', 'error');
-            $tile.draggable('option', 'revert', true);
+        // Reject tiles that are already placed on the board
+        if ($tile.hasClass('placed')) {
+            showMessage('Use "Return Tiles" button to move placed tiles!', 'error');
+            snapTileBackToRack($tile);
             return;
         }
 
-        // Handle blank tile - prompt for letter
-        if (letter === '_') {
+        // Check if cell already has a tile
+        if (boardState[row][col] !== null) {
+            // Verify the existing tile is still in the DOM
+            const $existingTile = $cell.find('.tile');
+            if ($existingTile.length === 0) {
+                // Board state says occupied but no tile in DOM - fix the desync
+                console.warn(`[handleTileDrop] Desync: boardState[${row}][${col}] occupied but no DOM tile. Clearing state.`);
+                boardState[row][col] = null;
+                $cell.removeClass('has-tile');
+                // Now allow placement to proceed
+            } else {
+                // Cell is genuinely occupied - snap tile back to rack
+                showMessage('That cell already has a tile!', 'error');
+                snapTileBackToRack($tile);
+                return;
+            }
+        }
+
+        if (originalLetter === '_') {
+            // Handle blank tile - prompt for letter
             const chosenLetter = promptForBlankLetter();
             if (!chosenLetter) {
                 // User cancelled, revert the tile
@@ -512,7 +672,13 @@
         // Remove from rack
         const rackIndex = $tile.data('rack-index');
         if (rackIndex !== undefined && rackIndex >= 0 && rackIndex < playerRack.length) {
-            playerRack.splice(rackIndex, 1);
+            // Remove blank from rack by finding it (more reliable)
+            const blankIdx = playerRack.indexOf('_');
+            if (blankIdx !== -1) {
+                playerRack.splice(blankIdx, 1);
+            } else if (rackIndex < playerRack.length) {
+                playerRack.splice(rackIndex, 1);
+            }
         } else {
             console.warn('Invalid rackIndex during placeBlankTile:', rackIndex, 'playerRack length:', playerRack.length);
         }
@@ -539,6 +705,9 @@
             left: 0
         });
         $tile.addClass('placed');
+        $tile.attr('data-board-row', row).attr('data-board-col', col);
+        $tile.attr('data-letter', representedLetter);  // Update displayed letter
+        // Keep original-letter as '_' for returning to rack
 
         // Add letter overlay on blank tile
         const $overlay = $('<span>')
@@ -556,6 +725,9 @@
         // Re-render rack to update indices
         renderRack();
 
+        // Validate state after tile operation
+        validateTileState();
+
         // Update current word display and score
         updateCurrentWord();
         calculateAndDisplayScore();
@@ -566,8 +738,17 @@
     function placeTile($tile, $cell, row, col, letter, representedLetter) {
         // Remove from rack
         const rackIndex = $tile.data('rack-index');
-        if (rackIndex !== undefined && rackIndex >= 0 && rackIndex < playerRack.length) {
-            playerRack.splice(rackIndex, 1);
+        const originalLetter = $tile.data('original-letter') || letter;
+
+        if (rackIndex !== undefined && rackIndex >= 0) {
+            // Remove from rack by finding the letter (more reliable than index)
+            const letterIdx = playerRack.indexOf(originalLetter);
+            if (letterIdx !== -1) {
+                playerRack.splice(letterIdx, 1);
+            } else if (rackIndex < playerRack.length) {
+                // Fallback to index-based removal
+                playerRack.splice(rackIndex, 1);
+            }
         } else {
             console.warn('Invalid rackIndex during placeTile:', rackIndex, 'playerRack length:', playerRack.length);
         }
@@ -587,6 +768,7 @@
             left: 0
         });
         $tile.addClass('placed');
+        $tile.attr('data-board-row', row).attr('data-board-col', col);
 
         // Disable dragging for placed tiles
         $tile.draggable('disable');
@@ -597,6 +779,9 @@
 
         // Re-render rack to update indices
         renderRack();
+
+        // Validate state after tile operation
+        validateTileState();
 
         // Update current word display and score
         updateCurrentWord();
@@ -1344,7 +1529,7 @@
             updateNewTilesButton();
         }
 
-        // Clear current turn tracking (tiles stay on board)
+        // Clear current turn tracking (tiles stay on board, already locked)
         currentTurnTiles = [];
 
         // Deal new tiles to refill rack

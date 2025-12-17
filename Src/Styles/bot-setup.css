@@ -1,3 +1,61 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Bot Setup Page Stylesheet
+ * =============================================================================
+ * 
+ * @file        bot-setup.css
+ * @description Styles for the bot match configuration page where players
+ *              select difficulty and number of opponents before starting.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * STYLESHEET SECTIONS:
+ * =============================================================================
+ * 
+ * 1. CONTAINER LAYOUT
+ *    - Centered setup container, max-width constraints
+ * 
+ * 2. DIFFICULTY BUTTONS
+ *    - Grid layout for Easy, Medium, Hard, Expert buttons
+ *    - Color-coded by difficulty (green to red gradient)
+ *    - Selected state highlighting
+ * 
+ * 3. OPPONENT SLIDER
+ *    - Range input styling for 1-3 bot selection
+ *    - Custom track and thumb styling
+ * 
+ * 4. BOT PREVIEW
+ *    - Display of selected bots with generated names
+ *    - Color-coded bot cards matching game colors
+ * 
+ * 5. WAIT STATS
+ *    - Animated loading state while game initializes
+ * 
+ * 6. START BUTTON
+ *    - Prominent call-to-action with hover effects
+ * 
+ * 7. MENACING BUTTON
+ *    - Special styling for back/cancel actions
+ * 
+ * 8. RESPONSIVE DESIGN
+ *    - Mobile-friendly layout adjustments
+ * 
+ * =============================================================================
+ * DIFFICULTY COLORS:
+ * =============================================================================
+ * Easy:   #2ecc71 (Green)  - Friendly, approachable
+ * Medium: #f39c12 (Orange) - Moderate challenge
+ * Hard:   #e74c3c (Red)    - Significant challenge
+ * Expert: #8e44ad (Purple) - Maximum difficulty
+ * 
+ * =============================================================================
+ */
+
 /* ========================================
    BOT SETUP PAGE STYLES
    ======================================== */
@@ -428,23 +486,25 @@
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    left: 0;
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(231, 76, 60, 0.2), transparent);
-    transition: left 0.5s ease;
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
 }
 
 .btn-menacing:hover {
     background: linear-gradient(135deg, #1a252f, #2c3e50);
     border-color: #c0392b;
     color: #fff;
-    box-shadow: 0 0 20px rgba(231, 76, 60, 0.5), inset 0 0 20px rgba(231, 76, 60, 0.1);
+    box-shadow: 10px 0 20px rgba(231, 76, 60, 0.5), inset 0 0 20px rgba(231, 76, 60, 0.1);
     transform: scale(1.05);
+    transform-origin: left center;
 }
 
 .btn-menacing:hover::before {
-    left: 100%;
+    transform: translateX(100%);
 }
 
 /* Responsive */
@@ -471,4 +531,42 @@
         width: 100%;
         text-align: center;
     }
+}
+
+/* ========================================
+   SITE FOOTER STYLES
+   ======================================== */
+
+.site-footer {
+    background: linear-gradient(135deg, #2c1810 0%, #1a0f0a 100%);
+    border-top: 3px solid #c9a959;
+    padding: 20px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.footer-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.footer-content p {
+    margin: 5px 0;
+    color: #e8dcc8;
+    font-size: 0.9rem;
+}
+
+.footer-content strong {
+    color: #c9a959;
+}
+
+.footer-content a {
+    color: #c9a959;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-content a:hover {
+    color: #fff;
+    text-decoration: underline;
 }

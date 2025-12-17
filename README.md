@@ -2,6 +2,16 @@
 
 A fully-featured browser-based Scrabble game with AI opponents of varying difficulty levels.
 
+## 👤 Author Information
+
+| Field | Value |
+|-------|-------|
+| **Name** | Trent Brown |
+| **Email** | tgbrown450@gmail.com |
+| **Course** | UMass Lowell - GUI Programming I |
+| **Assignment** | HW5 - Scrabble Game |
+| **Date** | December 2024 |
+
 ## 🎮 Features
 
 - **Single Player Mode** - Classic drag-and-drop Scrabble gameplay
@@ -15,22 +25,6 @@ A fully-featured browser-based Scrabble game with AI opponents of varying diffic
 ## 🌐 GitHub Pages Deployment
 
 This project is configured for GitHub Pages deployment from the **root** directory.
-
-### Deployment Steps:
-1. Go to your repository **Settings** → **Pages**
-2. Under "Build and deployment":
-   - **Source**: Deploy from a branch
-   - **Branch**: `main` (or your default branch)
-   - **Folder**: `/ (root)`
-3. Click **Save**
-4. Your site will be live at: `https://<username>.github.io/SCRABBLE-GUI1-HW5/`
-
-### Access URLs (after deployment):
-| Page | URL |
-|------|-----|
-| Single Player | `https://<username>.github.io/SCRABBLE-GUI1-HW5/` |
-| Bot Setup | `https://<username>.github.io/SCRABBLE-GUI1-HW5/bot-game.html` |
-| Bot Game | `https://<username>.github.io/SCRABBLE-GUI1-HW5/bot-play.html` |
 
 ## 📁 Project Structure
 
@@ -68,34 +62,6 @@ This project is configured for GitHub Pages deployment from the **root** directo
         ├── index.css         # Single player styles
         ├── bot-game.css      # Bot mode styles
         └── bot-setup.css     # Setup page styles
-```
-
-## 🖥️ Running Locally
-
-Since the game loads external resources, you'll need a local server:
-
-### Option 1: Python (Recommended)
-```bash
-# Python 3
-python -m http.server 8000
-
-# Python 2
-python -m SimpleHTTPServer 8000
-```
-Then open: `http://localhost:8000/`
-
-### Option 2: Node.js
-```bash
-npx serve .
-```
-
-### Option 3: VS Code Live Server
-1. Install the "Live Server" extension
-2. Right-click on `index.html` → "Open with Live Server"
-
-### Option 4: PHP
-```bash
-php -S localhost:8000
 ```
 
 ## 🎯 How to Play

@@ -1,3 +1,52 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Bot Setup Configuration
+ * =============================================================================
+ * 
+ * @file        bot-setup.js
+ * @description Handles the bot game configuration page where players select
+ *              difficulty level and number of bot opponents before starting
+ *              a match. Generates random bot names based on difficulty.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * IMPLEMENTED FEATURES:
+ * =============================================================================
+ * 
+ * DIFFICULTY SELECTION:
+ * - Four difficulty buttons: Easy, Medium, Hard, Expert
+ * - Visual feedback showing selected difficulty
+ * - Difficulty descriptions explaining AI behavior
+ * 
+ * OPPONENT CONFIGURATION:
+ * - Slider to select 1-3 bot opponents
+ * - Dynamic preview of selected bots with generated names
+ * - Each bot gets a unique personality-based name
+ * 
+ * NAME GENERATION:
+ * - Easy bots: Goofy, silly names (e.g., "Derpy Potato")
+ * - Medium bots: Clever animal names (e.g., "Cunning Fox")
+ * - Hard bots: Villainous names (e.g., "Dark Overlord")
+ * - Expert bots: Ominous machine names (e.g., "ALPHA-7")
+ * 
+ * SESSION STORAGE:
+ * - Saves selected configuration to sessionStorage
+ * - Bot names, difficulties, and count stored for game page
+ * 
+ * =============================================================================
+ * EXTERNAL DEPENDENCIES:
+ * =============================================================================
+ * - jQuery 3.7.1 (https://jquery.com/)
+ * - jQuery UI 1.14.1 (https://jqueryui.com/)
+ * 
+ * =============================================================================
+ */
+
 (function () {
     'use strict';
 

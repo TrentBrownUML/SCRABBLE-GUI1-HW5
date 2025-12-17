@@ -1,3 +1,51 @@
+/**
+ * =============================================================================
+ * SCRABBLE GAME - Easy Bot AI
+ * =============================================================================
+ * 
+ * @file        easy-bot.js
+ * @description Easy difficulty AI opponent for Scrabble bot matches.
+ *              Uses a simple strategy of finding a small number of valid
+ *              words and selecting the best scoring option.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ * AI STRATEGY:
+ * =============================================================================
+ * 
+ * SEARCH APPROACH:
+ * - Finds up to 3 valid word candidates
+ * - Stops searching after finding enough candidates (fast but limited)
+ * - Selects highest scoring word from found candidates
+ * 
+ * MOVE GENERATION:
+ * - Identifies anchor points (cells adjacent to existing tiles)
+ * - Attempts to form words in horizontal and vertical directions
+ * - Uses simple permutation of rack tiles
+ * - Validates words against dictionary
+ * 
+ * LIMITATIONS (by design):
+ * - Does not search entire dictionary
+ * - May miss high-scoring opportunities
+ * - Limited consideration of bonus squares
+ * - No parallel word optimization
+ * 
+ * TIME LIMIT: 15 seconds maximum search time
+ * 
+ * =============================================================================
+ * EXTERNAL DEPENDENCIES:
+ * =============================================================================
+ * - Requires global dictionary Set from bot-game-main.js
+ * - Exposed as window.EasyBot for bot-game-main.js integration
+ * 
+ * =============================================================================
+ */
+
 (function (window) {
     'use strict';
 
