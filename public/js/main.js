@@ -350,6 +350,9 @@
 
         $rack.empty();
 
+        // Filter out any undefined values that might have crept in
+        playerRack = playerRack.filter(letter => letter !== undefined && letter !== null);
+
         playerRack.forEach((letter, index) => {
             const $tile = createTileElement(letter, index);
             $rack.append($tile);
@@ -415,6 +418,12 @@
     }
 
     function createTileElement(letter, index) {
+        // Defensive check for undefined letters
+        if (letter === undefined || letter === null) {
+            console.error('createTileElement called with undefined/null letter at index', index);
+            letter = '?';  // Fallback to prevent crash
+        }
+
         const displayLetter = letter === '_' ? 'Blank' : letter;
         const imagePath = `../Assets/Images/Tiles/Scrabble_Tile_${displayLetter}.jpg`;
 
@@ -502,8 +511,10 @@
     function placeBlankTile($tile, $cell, row, col, representedLetter) {
         // Remove from rack
         const rackIndex = $tile.data('rack-index');
-        if (rackIndex !== undefined) {
+        if (rackIndex !== undefined && rackIndex >= 0 && rackIndex < playerRack.length) {
             playerRack.splice(rackIndex, 1);
+        } else {
+            console.warn('Invalid rackIndex during placeBlankTile:', rackIndex, 'playerRack length:', playerRack.length);
         }
 
         // Update board state - store the represented letter for word display
@@ -555,8 +566,10 @@
     function placeTile($tile, $cell, row, col, letter, representedLetter) {
         // Remove from rack
         const rackIndex = $tile.data('rack-index');
-        if (rackIndex !== undefined) {
+        if (rackIndex !== undefined && rackIndex >= 0 && rackIndex < playerRack.length) {
             playerRack.splice(rackIndex, 1);
+        } else {
+            console.warn('Invalid rackIndex during placeTile:', rackIndex, 'playerRack length:', playerRack.length);
         }
 
         // Update board state
@@ -1351,7 +1364,13 @@
         // Return tiles to rack
         currentTurnTiles.forEach(tile => {
             boardState[tile.row][tile.col] = null;
-            playerRack.push(tile.letter);
+
+            // Ensure we return a valid letter
+            if (tile.letter !== undefined && tile.letter !== null) {
+                playerRack.push(tile.letter);
+            } else {
+                console.warn('Attempted to return undefined/null tile to rack:', tile);
+            }
 
             // Remove tile from board cell
             const $cell = $(`.board-cell[data-row="${tile.row}"][data-col="${tile.col}"]`);
