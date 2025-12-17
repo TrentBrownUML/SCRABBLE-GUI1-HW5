@@ -106,3 +106,8 @@ This project is configured for GitHub Pages deployment from the **root** directo
 - The Expert bot uses advanced heuristics but may still miss some optimal plays
 - Performance calibration runs on first load to adjust bot time limits
 - Blank tiles can represent any letter (0 points)
+
+## Planned Features
+
+- Word detection pre submit so player can know if their word is valid before locking in.
+- More distinct "personality" of each bot, and maybe the potential to submit new bot ideas
