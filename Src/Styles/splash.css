@@ -204,10 +204,18 @@
     box-shadow: 0 15px 40px rgba(231, 76, 60, 0.2);
 }
 
-/* Pass & Play Card (Disabled) */
+/* Pass & Play Card */
 .mode-card.passplay {
-    border-color: #7f8c8d;
+    border-color: #9b59b6;
 }
+
+.mode-card.passplay:hover {
+    background: linear-gradient(145deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.05));
+    border-color: #8e44ad;
+    box-shadow: 0 15px 40px rgba(155, 89, 182, 0.2);
+}
+
+/* Disabled Card Styling (for future modes) */
 
 .mode-card.disabled {
     cursor: not-allowed;

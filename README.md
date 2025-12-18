@@ -1,6 +1,8 @@
-# 🎲 Scrabble GUI
-little word game
-A fully-featured browser-based Scrabble game with AI opponents of varying difficulty levels.
+# 🎲 Little Word Game
+
+A fully-featured browser-based word game with AI opponents and local multiplayer.
+
+**Future Domain**: littlewordgame.com
 
 ## 👤 Author Information
 
@@ -12,15 +14,24 @@ A fully-featured browser-based Scrabble game with AI opponents of varying diffic
 | **Assignment** | HW5 - Scrabble Game |
 | **Date** | December 2024 |
 
-## 🎮 Features
+## 🎮 Game Modes
 
-- **Single Player Mode** - Classic drag-and-drop Scrabble gameplay
-- **Bot Mode** - Play against 1-3 AI opponents with animated tile movements
-- **4 Difficulty Levels**:
+- **📚 Training Mode** - Practice your word-building skills solo
+- **🤖 Bot Challenge** - Play against 1-3 AI opponents
+- **👥 Pass & Play** - Local multiplayer on one device (2-4 players)
+
+### Bot Difficulty Levels
   - 🟢 **Easy** - Simple word selection, great for beginners
   - 🟡 **Medium** - Extended vocabulary, moderate challenge
   - 🔴 **Hard** - Full dictionary access, strategic play
-  - ⚫ **Expert** - Advanced heuristics, premium tile targeting, optimal scoring
+  - ⚫ **Expert** - Advanced heuristics, premium tile targeting
+
+### Pass & Play Features
+  - 2-4 players on the same device
+  - Custom player names (up to 12 characters)
+  - Color wheel picker for player colors
+  - Privacy handoff screen between turns
+  - Player tiles highlighted with their color on the board
 
 ## 🌐 GitHub Pages Deployment
 
@@ -30,16 +41,21 @@ This project is configured for GitHub Pages deployment from the **root** directo
 
 ```
 / (root)
-├── index.html                # Single player entry point
-├── bot-game.html             # Bot game setup/configuration
-├── bot-play.html             # Bot game play area
+├── index.html                # Main splash page / game mode selection
+├── training.html             # Training mode (single player)
+├── bot-game.html             # Bot challenge setup
+├── bot-play.html             # Bot match play area
+├── passplay-lobby.html       # Pass & Play setup (names/colors)
+├── passplay-game.html        # Pass & Play game
 ├── README.md                 # This file
 ├── dictionary.txt            # Word dictionary (~178K valid words)
 │
 ├── js/                       # Game JavaScript
-│   ├── main.js               # Single player game logic
+│   ├── main.js               # Training mode game logic
 │   ├── bot-game-main.js      # Bot mode game engine
 │   ├── bot-setup.js          # Bot configuration handler
+│   ├── passplay-lobby.js     # Pass & Play lobby logic
+│   ├── passplay-game.js      # Pass & Play game logic
 │   ├── easy-bot.js           # Easy AI implementation
 │   ├── medium-bot.js         # Medium AI implementation
 │   ├── hard-bot.js           # Hard AI implementation
@@ -59,9 +75,12 @@ This project is configured for GitHub Pages deployment from the **root** directo
     ├── Scripts/
     │   └── logger.js         # Logging utilities
     └── Styles/
-        ├── index.css         # Single player styles
-        ├── bot-game.css      # Bot mode styles
-        └── bot-setup.css     # Setup page styles
+        ├── index.css         # Base game styles
+        ├── splash.css        # Splash page styles
+        ├── bot-game.css      # Bot match styles
+        ├── bot-setup.css     # Bot setup page styles
+        ├── passplay-lobby.css # Pass & Play lobby styles
+        └── passplay-game.css  # Pass & Play game styles
 ```
 
 ## 🎯 How to Play

@@ -1,0 +1,538 @@
+/**
+ * =============================================================================
+ * LITTLE WORD GAME - Pass & Play Lobby Stylesheet
+ * =============================================================================
+ * 
+ * @file        passplay-lobby.css
+ * @description Styles for the Pass & Play lobby page including player setup
+ *              cards, color wheel picker, and responsive layout.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ */
+
+/* ========================================
+   LOBBY CONTAINER
+   ======================================== */
+
+#lobby-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+#lobby-container header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#lobby-container header h1 {
+    font-size: 2.5rem;
+    color: #f0c040;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: #aaa;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* ========================================
+   LOBBY PANEL
+   ======================================== */
+
+#lobby-panel {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 30px;
+}
+
+#lobby-panel h2 {
+    color: #e8dcc8;
+    font-size: 1.3rem;
+    margin: 0 0 20px 0;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* ========================================
+   PLAYER COUNT SELECTION
+   ======================================== */
+
+#player-count-section {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+#player-count-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.count-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.count-btn:hover {
+    border-color: #f0c040;
+    background: rgba(240, 192, 64, 0.2);
+}
+
+.count-btn.active {
+    border-color: #f0c040;
+    background: linear-gradient(135deg, #f0c040, #c9a030);
+    color: #1a1a2e;
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(240, 192, 64, 0.4);
+}
+
+/* ========================================
+   PLAYER CARDS
+   ======================================== */
+
+#players-section {
+    margin-bottom: 30px;
+}
+
+#player-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.player-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.player-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.player-number {
+    font-size: 0.85rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.player-name-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.player-name-input:focus {
+    outline: none;
+    border-color: #f0c040;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.player-name-input::placeholder {
+    color: #666;
+}
+
+.color-picker-btn {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.color-picker-btn:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.color-picker-text {
+    font-size: 0.9rem;
+}
+
+/* ========================================
+   COLOR PICKER MODAL
+   ======================================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+    border: 2px solid #f0c040;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    max-width: 350px;
+    width: 90%;
+}
+
+.modal-content h3 {
+    color: #f0c040;
+    margin: 0 0 25px 0;
+    font-size: 1.4rem;
+}
+
+#color-wheel-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 0 auto 20px;
+}
+
+#color-wheel {
+    border-radius: 50%;
+    cursor: crosshair;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#color-wheel-handle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
+
+#color-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+#selected-color-swatch {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    background: #ff0000;
+}
+
+#selected-color-hex {
+    font-family: monospace;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.modal-buttons .btn {
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: #fff;
+}
+
+.btn-confirm:hover {
+    background: linear-gradient(135deg, #27ae60, #1e8449);
+    transform: translateY(-2px);
+}
+
+.btn-cancel {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: #fff;
+}
+
+.btn-cancel:hover {
+    background: linear-gradient(135deg, #7f8c8d, #6c7a7b);
+}
+
+/* ========================================
+   TIMER CONFIGURATION
+   ======================================== */
+
+#timer-section {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+#timer-section h2 {
+    color: #f0c040;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+#timer-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Toggle Switch */
+.timer-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.timer-toggle input {
+    display: none;
+}
+
+.toggle-slider {
+    width: 50px;
+    height: 26px;
+    background: #555;
+    border-radius: 13px;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.toggle-slider::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s ease;
+}
+
+.timer-toggle input:checked+.toggle-slider {
+    background: #27ae60;
+}
+
+.timer-toggle input:checked+.toggle-slider::after {
+    transform: translateX(24px);
+}
+
+.toggle-label {
+    color: #ddd;
+    font-size: 1rem;
+}
+
+/* Timer Inputs */
+#timer-config {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 5px;
+    width: 100%;
+}
+
+#timer-config.hidden {
+    display: none;
+}
+
+.timer-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timer-input-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.timer-input {
+    width: 60px;
+    padding: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid #555;
+    border-radius: 8px;
+    color: #f0c040;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+}
+
+.timer-input:focus {
+    outline: none;
+    border-color: #f0c040;
+}
+
+.timer-unit {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.timer-separator {
+    color: #f0c040;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.timer-note {
+    color: #888;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* ========================================
+   GAME CONTROLS
+   ======================================== */
+
+#game-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-start {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: #fff;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-start:hover {
+    background: linear-gradient(135deg, #27ae60, #1e8449);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
+}
+
+.btn-back {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 1rem;
+    text-decoration: none;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background: linear-gradient(135deg, #2c3e50, #1a252f);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 600px) {
+    #lobby-container header h1 {
+        font-size: 2rem;
+    }
+
+    #lobby-panel {
+        padding: 20px;
+    }
+
+    #player-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    #color-wheel-container {
+        width: 200px;
+        height: 200px;
+    }
+
+    #color-wheel {
+        width: 200px;
+        height: 200px;
+    }
+
+    #game-controls {
+        flex-direction: column;
+    }
+
+    .btn-start,
+    .btn-back {
+        width: 100%;
+        text-align: center;
+    }
+}

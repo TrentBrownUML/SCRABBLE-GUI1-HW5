@@ -135,7 +135,8 @@
     let firstWordPlayed = false;
     let dictionary = new Set();
     let dictionaryLoaded = false;
-    let turnNumber = 0;
+    let roundNumber = 1;        // Tracks full rounds (increments after all players have played)
+    let playsThisRound = 0;     // Count plays in current round
     let wordHistory = [];
     let gameOver = false;
     let consecutivePasses = 0;
@@ -970,10 +971,50 @@
 
         let totalScore = 0;
         wordsData.forEach(wordInfo => {
-            const $wordCell = $('<td>').addClass('word-text').text(wordInfo.word);
-            const $multCell = $('<td>').addClass('word-multiplier').text(wordInfo.wordMultiplier + '×');
+            const valid = isValidWord(wordInfo.word);
+
+            // Build rich word display with letter subscripts
+            const $wordCell = $('<td>').addClass('word-text');
+            if (wordInfo.letters) {
+                wordInfo.letters.forEach(letterInfo => {
+                    const $letterSpan = $('<span>').addClass('letter-with-score');
+                    $letterSpan.append($('<span>').addClass('letter-char').text(letterInfo.letter));
+
+                    const $subscript = $('<sub>').addClass('letter-value').text(letterInfo.score);
+                    if (letterInfo.bonus === 'DL') {
+                        $subscript.addClass('bonus-dl');
+                    } else if (letterInfo.bonus === 'TL') {
+                        $subscript.addClass('bonus-tl');
+                    }
+                    $letterSpan.append($subscript);
+                    $wordCell.append($letterSpan);
+                });
+            } else {
+                $wordCell.text(wordInfo.word);
+            }
+
+            // Word multiplier cell with styling
+            const $multCell = $('<td>').addClass('word-multiplier');
+            const mult = wordInfo.wordMultiplier;
+            const $multText = $('<span>').text(mult + '×');
+
+            if (mult === 1) {
+                $multText.addClass('mult-default');
+            } else if (mult === 2) {
+                $multText.addClass('mult-double');
+            } else if (mult === 3) {
+                $multText.addClass('mult-triple');
+            } else if (mult >= 4) {
+                $multText.addClass('mult-mega');
+            }
+            $multCell.append($multText);
+
             const $scoreCell = $('<td>').addClass('word-score').text(wordInfo.score);
-            $tbody.append($('<tr>').append($wordCell, $multCell, $scoreCell));
+
+            const $row = $('<tr>')
+                .addClass(valid ? '' : 'invalid-word')
+                .append($wordCell, $multCell, $scoreCell);
+            $tbody.append($row);
             totalScore += wordInfo.score;
         });
 
@@ -1167,14 +1208,13 @@
 
         // Add score
         bot.score += turnScore;
-        turnNumber++;
         firstWordPlayed = true;
         consecutivePasses = 0;
 
-        // Add to word history
+        // Add to word history (use current round number)
         wordsFormed.forEach(wordInfo => {
             wordHistory.push({
-                turn: turnNumber,
+                turn: roundNumber,
                 player: bot.name,
                 word: wordInfo.word,
                 score: wordInfo.score,
@@ -1183,6 +1223,13 @@
                 hasTripleWord: wordInfo.hasTripleWord
             });
         });
+
+        // Track plays in this round
+        playsThisRound++;
+        if (playsThisRound >= players.length) {
+            roundNumber++;
+            playsThisRound = 0;
+        }
 
         // Refill bot's rack
         dealTilesToPlayer(bot, 7 - bot.rack.length);
@@ -1268,15 +1315,21 @@
 
     async function botPass(bot) {
         consecutivePasses++;
-        turnNumber++;
         showMessage(`${bot.name} passed.`, 'info');
 
         wordHistory.push({
-            turn: turnNumber,
+            turn: roundNumber,
             player: bot.name,
             word: '(pass)',
             score: 0
         });
+
+        // Track plays in this round
+        playsThisRound++;
+        if (playsThisRound >= players.length) {
+            roundNumber++;
+            playsThisRound = 0;
+        }
 
         updateWordHistoryDisplay();
 
@@ -1348,7 +1401,6 @@
         // Calculate score
         const turnScore = wordsFormed.reduce((sum, w) => sum + w.score, 0);
         players[0].score += turnScore;
-        turnNumber++;
         firstWordPlayed = true;
         consecutivePasses = 0;
 
@@ -1358,10 +1410,10 @@
             $(this).draggable('disable');
         });
 
-        // Add to history
+        // Add to history (use current round number)
         wordsFormed.forEach(wordInfo => {
             wordHistory.push({
-                turn: turnNumber,
+                turn: roundNumber,
                 player: 'You',
                 word: wordInfo.word,
                 score: wordInfo.score,
@@ -1370,6 +1422,13 @@
                 hasTripleWord: wordInfo.hasTripleWord
             });
         });
+
+        // Track plays in this round
+        playsThisRound++;
+        if (playsThisRound >= players.length) {
+            roundNumber++;
+            playsThisRound = 0;
+        }
 
         // Refill rack
         dealTilesToPlayer(players[0], 7 - players[0].rack.length);
@@ -1410,14 +1469,20 @@
             clearCurrentTurn();
         }
         consecutivePasses++;
-        turnNumber++;
 
         wordHistory.push({
-            turn: turnNumber,
+            turn: roundNumber,
             player: 'You',
             word: '(pass)',
             score: 0
         });
+
+        // Track plays in this round
+        playsThisRound++;
+        if (playsThisRound >= players.length) {
+            roundNumber++;
+            playsThisRound = 0;
+        }
 
         showMessage('You passed.', 'info');
         updateWordHistoryDisplay();
@@ -1484,8 +1549,8 @@
         $content.append($scores);
 
         const $buttons = $('<div>').attr('id', 'game-over-buttons');
-        $buttons.append($('<a>').addClass('btn btn-start').attr('href', 'bot-game.html').text('Play Again'));
-        $buttons.append($('<a>').addClass('btn btn-back').attr('href', 'index.html').text('Single Player'));
+        $buttons.append($('<a>').addClass('btn btn-start').attr('href', 'bot-game.html').text('🔄 Play Again'));
+        $buttons.append($('<a>').addClass('btn btn-back').attr('href', 'index.html').text('🏠 Back to Menu'));
         $content.append($buttons);
 
         $overlay.append($content);
@@ -1638,8 +1703,13 @@
                     shuffleArray(tileBag);
                     dealTilesToPlayer(players[0], 1);
                     consecutivePasses++;
-                    turnNumber++;
-                    wordHistory.push({ turn: turnNumber, player: 'You', word: '(swap)', score: 0 });
+                    wordHistory.push({ turn: roundNumber, player: 'You', word: '(swap)', score: 0 });
+                    // Track plays in this round
+                    playsThisRound++;
+                    if (playsThisRound >= players.length) {
+                        roundNumber++;
+                        playsThisRound = 0;
+                    }
                     showMessage('Tile swapped.', 'info');
                     updateAllDisplays();
                     nextTurn();

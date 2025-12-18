@@ -156,7 +156,7 @@
     let firstWordPlayed = false;    // Track if first word has been played
     let dictionary = new Set();     // Set of valid words for O(1) lookup
     let dictionaryLoaded = false;   // Track if dictionary has finished loading
-    let turnNumber = 0;             // Track turn count for word history
+    let roundNumber = 1;            // Track round count for word history
     let wordHistory = [];           // Array of { turn, player, word, score }
 
     // ========================================
@@ -1110,6 +1110,8 @@
 
         let totalScore = 0;
         wordsData.forEach(wordInfo => {
+            const valid = isValidWord(wordInfo.word);
+
             // Build rich word display with letter subscripts
             const $wordCell = $('<td>').addClass('word-text');
             wordInfo.letters.forEach(letterInfo => {
@@ -1147,6 +1149,7 @@
             const $scoreCell = $('<td>').addClass('word-score').text(wordInfo.score);
 
             const $row = $('<tr>')
+                .addClass(valid ? '' : 'invalid-word')
                 .append($wordCell)
                 .append($multiplierCell)
                 .append($scoreCell);
@@ -1364,8 +1367,8 @@
         renderRack();
         updateTileDistributionTable();
 
-        // Increment turn (swap counts as a turn)
-        turnNumber++;
+        // Increment round (swap counts as a turn)
+        roundNumber++;
 
         const displayLetter = letter === '_' ? 'Blank' : letter;
         const newDisplayLetter = newTile === '_' ? 'Blank' : newTile;
@@ -1459,6 +1462,13 @@
         $('#clear-board').on('click', clearCurrentTurn);
         $('#new-tiles').on('click', getNewTiles);
         $('#reset-game').on('click', resetGame);
+        $('#end-training').on('click', endTraining);
+    }
+
+    function endTraining() {
+        if (confirm('End training early and return to the main menu?')) {
+            window.location.href = 'index.html';
+        }
     }
 
     function submitWord() {
@@ -1506,10 +1516,9 @@
         totalScore += wordScore;
 
         // Add words to history
-        turnNumber++;
         wordsFormed.forEach(wordInfo => {
             wordHistory.push({
-                turn: turnNumber,
+                turn: roundNumber,
                 player: 'Player 1',
                 word: wordInfo.word,
                 score: wordInfo.score,
@@ -1519,6 +1528,7 @@
                 hasTripleWord: wordInfo.hasTripleWord
             });
         });
+        roundNumber++;
         updateWordHistoryDisplay();
 
         updateScoreDisplay();
@@ -1619,7 +1629,7 @@
             currentTurnTiles = [];
             playerRack = [];
             firstWordPlayed = false;
-            turnNumber = 0;
+            roundNumber = 1;
             wordHistory = [];
             initTileBag();
             initBoardState();

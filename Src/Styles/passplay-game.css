@@ -1,0 +1,558 @@
+/**
+ * =============================================================================
+ * LITTLE WORD GAME - Pass & Play Game Stylesheet
+ * =============================================================================
+ * 
+ * @file        passplay-game.css
+ * @description Additional styles for Pass & Play game mode, including the
+ *              handoff overlay between player turns.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ */
+
+/* ========================================
+   HANDOFF OVERLAY
+   ======================================== */
+
+#handoff-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+#handoff-overlay.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+#handoff-content {
+    text-align: center;
+    max-width: 450px;
+    padding: 40px;
+}
+
+#handoff-title {
+    font-size: 2.5rem;
+    color: #f0c040;
+    margin: 0 0 30px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#handoff-player-display {
+    margin-bottom: 30px;
+}
+
+#handoff-player-icon {
+    font-size: 5rem;
+    margin-bottom: 15px;
+    animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+#handoff-player-name {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+#handoff-player-color-bar {
+    width: 100px;
+    height: 8px;
+    border-radius: 4px;
+    margin: 0 auto;
+    background: #e74c3c;
+}
+
+#handoff-message {
+    color: #aaa;
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.btn-handoff {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: #fff;
+    padding: 18px 40px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: pulse 2s ease infinite;
+}
+
+.btn-handoff:hover {
+    background: linear-gradient(135deg, #27ae60, #1e8449);
+    transform: scale(1.05);
+    box-shadow: 0 10px 40px rgba(46, 204, 113, 0.4);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 0 15px rgba(46, 204, 113, 0);
+    }
+}
+
+/* ========================================
+   GAME OVER OVERLAY
+   ======================================== */
+
+#game-over-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+#game-over-overlay.hidden {
+    display: none;
+}
+
+#game-over-content {
+    text-align: center;
+    max-width: 500px;
+    padding: 40px;
+    background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+    border: 3px solid #f0c040;
+    border-radius: 20px;
+}
+
+#game-over-content h2 {
+    font-size: 2.5rem;
+    color: #f0c040;
+    margin: 0 0 30px 0;
+}
+
+#final-standings {
+    margin-bottom: 30px;
+}
+
+.standing-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 5px solid #888;
+}
+
+.standing-row.winner {
+    background: rgba(240, 192, 64, 0.15);
+    border-left-color: #f0c040;
+}
+
+.standing-rank {
+    font-size: 1.5rem;
+    font-weight: bold;
+    width: 40px;
+}
+
+.standing-row.winner .standing-rank {
+    color: #f0c040;
+}
+
+.standing-name {
+    flex: 1;
+    text-align: left;
+    font-size: 1.2rem;
+    color: #fff;
+    padding-left: 15px;
+}
+
+.standing-score {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2ecc71;
+}
+
+.game-over-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.game-over-buttons .btn {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+}
+
+/* ========================================
+   PLAYER COLOR HIGHLIGHTING
+   ======================================== */
+
+.tile.placed-by-player {
+    position: relative;
+}
+
+.tile.placed-by-player::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--player-color, #888);
+}
+
+/* Player-specific score row highlighting */
+.score-row.current-player {
+    background: rgba(46, 204, 113, 0.2);
+}
+
+.score-row .player-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* ========================================
+   TURN INDICATOR ENHANCEMENTS
+   ======================================== */
+
+#turn-indicator {
+    position: relative;
+    overflow: hidden;
+}
+
+#turn-indicator::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: var(--current-player-color, #2ecc71);
+}
+
+/* ========================================
+   END GAME BUTTON TOOLTIP (Pass & Play)
+   ======================================== */
+
+.btn-surrender::after {
+    content: '🏁 End game early and see final scores';
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 0;
+    left: auto;
+    transform: none;
+    background: rgba(0, 0, 0, 0.95);
+    color: #f0c040;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+    border: 1px solid #f0c040;
+    z-index: 1000;
+}
+
+.btn-surrender:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ========================================
+   WORD PREVIEW STYLING
+   ======================================== */
+
+.invalid-word {
+    color: #e74c3c;
+    text-decoration: line-through;
+}
+
+.bingo-row {
+    color: #f0c040;
+    font-weight: bold;
+    background: rgba(240, 192, 64, 0.1);
+}
+
+.bingo-row td {
+    color: #f0c040 !important;
+}
+
+#words-list tr td:last-child {
+    font-weight: bold;
+    color: #2ecc71;
+}
+
+.invalid-word td:last-child {
+    color: #e74c3c !important;
+}
+
+/* ========================================
+   RICH WORD DISPLAY STYLING
+   ======================================== */
+
+/* Letter with subscript score */
+.letter-with-score {
+    display: inline-block;
+    position: relative;
+    margin-right: 1px;
+}
+
+.letter-char {
+    font-size: 0.9rem;
+}
+
+.letter-value {
+    font-size: 0.6rem;
+    color: #aaa;
+    margin-left: 1px;
+}
+
+.letter-value.bonus-dl {
+    color: #85c1e9;
+    font-weight: bold;
+}
+
+.letter-value.bonus-tl {
+    color: #3498db;
+    font-weight: bold;
+}
+
+/* Word multiplier column */
+.word-multiplier {
+    text-align: center;
+    font-weight: bold;
+}
+
+.mult-default {
+    color: #f0c040;
+}
+
+.mult-double {
+    color: #f39c9c;
+    text-shadow: 0 0 5px rgba(243, 156, 156, 0.5);
+}
+
+.mult-triple {
+    color: #e74c3c;
+    text-shadow: 0 0 8px rgba(231, 76, 60, 0.6);
+}
+
+.mult-mega {
+    background: linear-gradient(135deg, #f39c9c, #e74c3c, #f0c040, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.1rem;
+    animation: mega-pulse 1s ease-in-out infinite alternate;
+    text-shadow: none;
+}
+
+@keyframes mega-pulse {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    100% {
+        transform: scale(1.15);
+        filter: brightness(1.3);
+    }
+}
+
+.word-score {
+    text-align: right;
+    color: #2ecc71;
+}
+
+/* Word score with multiplier colors - higher specificity to override base .word-score */
+.word-score.mult-double {
+    color: #f39c9c !important;
+    text-shadow: 0 0 5px rgba(243, 156, 156, 0.5);
+}
+
+.word-score.mult-triple {
+    color: #e74c3c !important;
+    text-shadow: 0 0 8px rgba(231, 76, 60, 0.6);
+}
+
+.word-score.mult-mega {
+    background: linear-gradient(135deg, #f39c9c, #e74c3c, #f0c040, #3498db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: mega-pulse 1s ease-in-out infinite alternate;
+    text-shadow: none;
+}
+
+.no-words {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+/* Duration column in history */
+.history-duration {
+    text-align: right;
+    color: #888;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+}
+
+/* ========================================
+   TIMER DISPLAY SECTION
+   ======================================== */
+
+#timer-display-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.timer-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timer-box.hidden {
+    display: none;
+}
+
+.timer-label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.timer-value {
+    font-family: 'Courier New', monospace;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f0c040;
+    letter-spacing: 2px;
+}
+
+/* Turn countdown specific styling */
+.timer-value.countdown {
+    color: #2ecc71;
+}
+
+.timer-value.countdown.low {
+    color: #f39c12;
+}
+
+.timer-value.countdown.warning {
+    color: #e74c3c;
+    animation: pulse-warning 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-warning {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 600px) {
+    #handoff-content {
+        padding: 30px 20px;
+    }
+
+    #handoff-title {
+        font-size: 2rem;
+    }
+
+    #handoff-player-icon {
+        font-size: 4rem;
+    }
+
+    #handoff-player-name {
+        font-size: 1.5rem;
+    }
+
+    .btn-handoff {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+
+    #game-over-content {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+
+    #game-over-content h2 {
+        font-size: 2rem;
+    }
+}
