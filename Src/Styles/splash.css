@@ -1,0 +1,367 @@
+/**
+ * =============================================================================
+ * LITTLE WORD GAME - Splash Page Stylesheet
+ * =============================================================================
+ * 
+ * @file        splash.css
+ * @description Styles for the main landing/splash page. Contains animated
+ *              logo tiles, game mode selection cards, and responsive layout.
+ * 
+ * @author      Trent Brown
+ * @contact     tgbrown450@gmail.com
+ * @course      UMass Lowell - GUI Programming I
+ * @assignment  HW5 - Scrabble Game
+ * @date        December 2024
+ * 
+ * =============================================================================
+ */
+
+/* ========================================
+   SPLASH CONTAINER
+   ======================================== */
+
+#splash-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* ========================================
+   HEADER / LOGO SECTION
+   ======================================== */
+
+.splash-header {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.logo-tiles {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.logo-tile {
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(145deg, #f5deb3, #d4a574);
+    border: 3px solid #8b4513;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c1810;
+    box-shadow:
+        3px 3px 6px rgba(0, 0, 0, 0.4),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.5);
+    animation: tileFloat 3s ease-in-out infinite;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.logo-tile:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.logo-tile:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.logo-tile:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.logo-tile:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+.logo-tile:nth-child(5) {
+    animation-delay: 0.8s;
+}
+
+.logo-tile:nth-child(6) {
+    animation-delay: 1s;
+}
+
+@keyframes tileFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.game-title {
+    font-size: 3.5rem;
+    color: #f0c040;
+    text-shadow:
+        3px 3px 6px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(240, 192, 64, 0.3);
+    margin: 0 0 10px 0;
+    letter-spacing: 2px;
+}
+
+.tagline {
+    font-size: 1.3rem;
+    color: #aaa;
+    margin: 0;
+    font-style: italic;
+}
+
+/* ========================================
+   MODE SELECTION SECTION
+   ======================================== */
+
+.mode-selection {
+    flex: 1;
+    padding: 30px 0;
+}
+
+.select-mode-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #e8dcc8;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.mode-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 950px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   MODE CARD STYLING
+   ======================================== */
+
+.mode-card {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    display: block;
+}
+
+.mode-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.mode-card:hover::before {
+    left: 100%;
+}
+
+.mode-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Training Mode Card */
+.mode-card.training {
+    border-color: #2ecc71;
+}
+
+.mode-card.training:hover {
+    background: linear-gradient(145deg, rgba(46, 204, 113, 0.2), rgba(46, 204, 113, 0.05));
+    border-color: #27ae60;
+    box-shadow: 0 15px 40px rgba(46, 204, 113, 0.2);
+}
+
+/* Bot Challenge Card */
+.mode-card.bots {
+    border-color: #e74c3c;
+}
+
+.mode-card.bots:hover {
+    background: linear-gradient(145deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.05));
+    border-color: #c0392b;
+    box-shadow: 0 15px 40px rgba(231, 76, 60, 0.2);
+}
+
+/* Pass & Play Card (Disabled) */
+.mode-card.passplay {
+    border-color: #7f8c8d;
+}
+
+.mode-card.disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.mode-card.disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.mode-card.disabled:hover::before {
+    left: -100%;
+}
+
+.disabled-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+}
+
+.lock-icon {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+/* ========================================
+   MODE CARD CONTENT
+   ======================================== */
+
+.mode-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.mode-title {
+    font-size: 1.5rem;
+    color: #f0c040;
+    margin: 0 0 15px 0;
+}
+
+.mode-description {
+    font-size: 0.95rem;
+    color: #bbb;
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+}
+
+.mode-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.mode-badge.coming-soon {
+    background: linear-gradient(135deg, #7f8c8d, #5a6a6e);
+}
+
+/* ========================================
+   QUICK INFO SECTION
+   ======================================== */
+
+.quick-info {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 30px 20px;
+    margin-top: auto;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-icon {
+    font-size: 1.5rem;
+}
+
+.info-text {
+    color: #aaa;
+    font-size: 0.95rem;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2.5rem;
+    }
+
+    .logo-tile {
+        width: 45px;
+        height: 45px;
+        font-size: 1.5rem;
+    }
+
+    .mode-cards {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+
+    .quick-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-title {
+        font-size: 2rem;
+        letter-spacing: 1px;
+    }
+
+    .logo-tile {
+        width: 38px;
+        height: 38px;
+        font-size: 1.3rem;
+        gap: 5px;
+    }
+
+    .tagline {
+        font-size: 1rem;
+    }
+
+    .select-mode-title {
+        font-size: 1.3rem;
+        letter-spacing: 2px;
+    }
+
+    .mode-card {
+        padding: 20px;
+    }
+
+    .mode-icon {
+        font-size: 3rem;
+    }
+}

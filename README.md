@@ -1,6 +1,8 @@
-# 🎲 Scrabble GUI
+# 🎲 Little Word Game
 
-A fully-featured browser-based Scrabble game with AI opponents of varying difficulty levels.
+A fully-featured browser-based word game with AI opponents of varying difficulty levels.
+
+**Future Domain**: littlewordgame.com
 
 ## 👤 Author Information
 
@@ -12,11 +14,13 @@ A fully-featured browser-based Scrabble game with AI opponents of varying diffic
 | **Assignment** | HW5 - Scrabble Game |
 | **Date** | December 2024 |
 
-## 🎮 Features
+## 🎮 Game Modes
 
-- **Single Player Mode** - Classic drag-and-drop Scrabble gameplay
-- **Bot Mode** - Play against 1-3 AI opponents with animated tile movements
-- **4 Difficulty Levels**:
+- **📚 Training Mode** - Practice your word-building skills at your own pace
+- **🤖 Bot Challenge** - Play against 1-3 AI opponents with animated tile movements
+- **👥 Pass & Play** - Local multiplayer (Coming Soon!)
+
+### Bot Difficulty Levels
   - 🟢 **Easy** - Simple word selection, great for beginners
   - 🟡 **Medium** - Extended vocabulary, moderate challenge
   - 🔴 **Hard** - Full dictionary access, strategic play
@@ -30,9 +34,10 @@ This project is configured for GitHub Pages deployment from the **root** directo
 
 ```
 / (root)
-├── index.html                # Single player entry point
-├── bot-game.html             # Bot game setup/configuration
-├── bot-play.html             # Bot game play area
+├── index.html                # Main splash page / game mode selection
+├── training.html             # Training mode (single player)
+├── bot-game.html             # Bot challenge setup/configuration
+├── bot-play.html             # Bot match play area
 ├── README.md                 # This file
 ├── dictionary.txt            # Word dictionary (~178K valid words)
 │
@@ -59,8 +64,9 @@ This project is configured for GitHub Pages deployment from the **root** directo
     ├── Scripts/
     │   └── logger.js         # Logging utilities
     └── Styles/
-        ├── index.css         # Single player styles
-        ├── bot-game.css      # Bot mode styles
+        ├── index.css         # Base game styles
+        ├── splash.css        # Splash page styles
+        ├── bot-game.css      # Bot match styles
         └── bot-setup.css     # Setup page styles
 ```
 
@@ -106,3 +112,4 @@ This project is configured for GitHub Pages deployment from the **root** directo
 - The Expert bot uses advanced heuristics but may still miss some optimal plays
 - Performance calibration runs on first load to adjust bot time limits
 - Blank tiles can represent any letter (0 points)
+us
